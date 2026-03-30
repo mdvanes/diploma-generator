@@ -27,8 +27,6 @@ This is a plain static site — no build step required.
 
 **GitHub Pages** — push to a repo, enable Pages from *Settings → Pages*, set source to the root of your branch.
 
-**Netlify / Cloudflare Pages** — drag the folder onto the dashboard, or connect the repo for auto-deploy on push.
-
 > **Local testing:** open via a local server, not `file://`. Assets are fetched with `fetch()` which browsers block on `file://` origins.
 > ```bash
 > npx serve .
@@ -53,9 +51,6 @@ Default layout (matches the included `template.pdf`):
 | Date | 421 | 252 | 16 |
 | Star badge | 371 | 65 | 100 |
 | Seal | 102 | 65 | 100 |
-
-### Regenerate `template.pdf`
-The template was generated with the `generate_template.py` script (see `/scripts`). It uses only standard built-in PDF fonts (no embedded TTFs) so that pdf-lib can parse it without errors.
 
 ## Dependencies
 
