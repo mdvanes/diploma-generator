@@ -400,8 +400,7 @@
 
             iframe#preview {
                 width: 100%;
-                max-width: 860px;
-                aspect-ratio: 1191 / 842;
+                aspect-ratio: 4 / 3;
                 border: 1px solid var(--rule);
                 border-radius: 2px;
                 box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
@@ -580,6 +579,67 @@
                 </div>
 
                 <div class="field">
+                    <label>Pronoun</label>
+                    <div style="display: flex; gap: 8px">
+                        <label
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                                text-transform: none;
+                                letter-spacing: 0;
+                                font-size: 13px;
+                                cursor: pointer;
+                            "
+                            ><input
+                                type="radio"
+                                name="pronoun"
+                                value="his"
+                                checked
+                                style="width: auto; margin: 0"
+                            />
+                            his</label
+                        >
+                        <label
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                                text-transform: none;
+                                letter-spacing: 0;
+                                font-size: 13px;
+                                cursor: pointer;
+                            "
+                            ><input
+                                type="radio"
+                                name="pronoun"
+                                value="her"
+                                style="width: auto; margin: 0"
+                            />
+                            her</label
+                        >
+                        <label
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                                text-transform: none;
+                                letter-spacing: 0;
+                                font-size: 13px;
+                                cursor: pointer;
+                            "
+                            ><input
+                                type="radio"
+                                name="pronoun"
+                                value="their"
+                                style="width: auto; margin: 0"
+                            />
+                            their</label
+                        >
+                    </div>
+                </div>
+
+                <div class="field">
                     <label for="f-date">Date of Issue</label>
                     <input type="date" id="f-date" />
                 </div>
@@ -667,31 +727,50 @@
                         </label>
                     </div>
                 </div>
-    <div class="field" style="margin-bottom:16px">
-      <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;cursor:pointer;">
-        <input type="checkbox" id="f-border" style="width:auto;margin:0" />
-        Show border
-      </label>
-    </div>
-    <div class="field">
-      <label>Pronoun</label>
-      <div style="display:flex;gap:8px;">
-        <label style="display:flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;font-size:13px;cursor:pointer;"><input type="radio" name="pronoun" value="his" checked style="width:auto;margin:0"> his</label>
-        <label style="display:flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;font-size:13px;cursor:pointer;"><input type="radio" name="pronoun" value="her" style="width:auto;margin:0"> her</label>
-        <label style="display:flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;font-size:13px;cursor:pointer;"><input type="radio" name="pronoun" value="their" style="width:auto;margin:0"> their</label>
-      </div>
-    </div>
+                <div class="field" style="margin-bottom: 16px">
+                    <label
+                        style="
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            text-transform: none;
+                            letter-spacing: 0;
+                            font-size: 13px;
+                            cursor: pointer;
+                        "
+                    >
+                        <input
+                            type="checkbox"
+                            id="f-border"
+                            style="width: auto; margin: 0"
+                        />
+                        Show border
+                    </label>
+                </div>
 
                 <!-- Layout accordion -->
-                <details class="layout-accordion">
+                <details class="layout-accordion" style="display: none">
                     <summary>Layout Configuration</summary>
                     <div class="layout-grid">
-                                <div class="layout-heading">Anniversary Text</div>
-        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-anniv-x" value="595" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-anniv-y" value="601" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-anniv-size" value="28" /></div>
+                        <div class="layout-heading">Anniversary Text</div>
+                        <div class="layout-group">
+                            <div class="lbl">X</div>
+                            <input type="number" id="lx-anniv-x" value="595" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Y</div>
+                            <input type="number" id="lx-anniv-y" value="601" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Size</div>
+                            <input
+                                type="number"
+                                id="lx-anniv-size"
+                                value="28"
+                            />
+                        </div>
 
-        <div class="layout-heading">Name</div>
+                        <div class="layout-heading">Name</div>
                         <div class="layout-group">
                             <div class="lbl">X</div>
                             <input type="number" id="lx-name-x" value="595" />
@@ -766,7 +845,11 @@
                         </div>
                         <div class="layout-group">
                             <div class="lbl">Size</div>
-                            <input type="number" id="lx-seal-size" value="170" />
+                            <input
+                                type="number"
+                                id="lx-seal-size"
+                                value="170"
+                            />
                         </div>
 
                         <div class="layout-heading">Signature</div>
@@ -923,12 +1006,19 @@
                 const d = new Date(raw + "T00:00:00");
                 return isNaN(d.getTime())
                     ? raw
-                    : 'On ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    : "On " +
+                          d.toLocaleDateString("en-US", {
+                              month: "long",
+                              day: "numeric",
+                              year: "numeric",
+                          });
             }
 
             function yearsLabel(y) {
                 const n = parseInt(y);
-                return n === 1 ? "1 Year at Codestar" : `${n} Years at Codestar`;
+                return n === 1
+                    ? "1 Year at Codestar"
+                    : `${n} Years at Codestar`;
             }
 
             function slugName(name) {
@@ -1021,7 +1111,12 @@
                 const n = (id) =>
                     parseFloat(document.getElementById(id).value) || 0;
                 return {
-                    anniv: { x: n('lx-anniv-x'), y: n('lx-anniv-y'), size: n('lx-anniv-size'), align: 'center' },
+                    anniv: {
+                        x: n("lx-anniv-x"),
+                        y: n("lx-anniv-y"),
+                        size: n("lx-anniv-size"),
+                        align: "center",
+                    },
                     name: {
                         x: n("lx-name-x"),
                         y: n("lx-name-y"),
@@ -1064,7 +1159,7 @@
             // ═══════════════════════════════════════════════════════════════════════════════
             async function generatePDF() {
                 const { PDFDocument, rgb, StandardFonts } = PDFLib;
-                const nameColor = rgb(0.059, 0.408, 0.651);  // #0f68a6 — shared by name, years, and border
+                const nameColor = rgb(0.059, 0.408, 0.651); // #0f68a6 — shared by name, years, and border
 
                 const name = document.getElementById("f-name").value.trim();
                 const date = document.getElementById("f-date").value;
@@ -1127,14 +1222,16 @@
                     });
                 }
 
-                const pronoun = document.querySelector('input[name="pronoun"]:checked').value;
+                const pronoun = document.querySelector(
+                    'input[name="pronoun"]:checked',
+                ).value;
                 const anniversaryText = `With ${pronoun} ${star} anniversary of`;
 
                 const layout = getLayout();
-                drawCentred(anniversaryText,   layout.anniv, rgb(0, 0, 0));
-                drawCentred(name,              layout.name,  nameColor);
+                drawCentred(anniversaryText, layout.anniv, rgb(0, 0, 0));
+                drawCentred(name, layout.name, nameColor);
                 drawCentred(yearsLabel(years), layout.years, nameColor);
-                drawCentred(formatDate(date),  layout.date,  rgb(0, 0, 0));
+                drawCentred(formatDate(date), layout.date, rgb(0, 0, 0));
 
                 // Draw signature in Blank Script font
                 const signee = document.getElementById("f-signee").value.trim();
@@ -1155,10 +1252,24 @@
                 }
 
                 // Optional border — drawn in the same colour as the recipient name
-                if (document.getElementById('f-border').checked) {
+                if (document.getElementById("f-border").checked) {
                     const { width, height } = page.getSize();
-                    page.drawRectangle({ x: 25.5, y: 25.5, width: width - 51,   height: height - 51,   borderColor: nameColor, borderWidth: 2.5 });
-                    page.drawRectangle({ x: 35.4, y: 35.4, width: width - 70.8, height: height - 70.8, borderColor: nameColor, borderWidth: 0.8 });
+                    page.drawRectangle({
+                        x: 25.5,
+                        y: 25.5,
+                        width: width - 51,
+                        height: height - 51,
+                        borderColor: nameColor,
+                        borderWidth: 2.5,
+                    });
+                    page.drawRectangle({
+                        x: 35.4,
+                        y: 35.4,
+                        width: width - 70.8,
+                        height: height - 70.8,
+                        borderColor: nameColor,
+                        borderWidth: 0.8,
+                    });
                 }
 
                 // Embed seal (optional — skip silently if it didn't load)
