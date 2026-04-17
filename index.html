@@ -682,8 +682,8 @@
                     <div class="layout-grid">
                                 <div class="layout-heading">Anniversary Text</div>
         <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-anniv-x" value="595" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-anniv-y" value="593" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-anniv-size" value="31" /></div>
+        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-anniv-y" value="601" /></div>
+        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-anniv-size" value="28" /></div>
 
         <div class="layout-heading">Name</div>
                         <div class="layout-group">
@@ -692,11 +692,11 @@
                         </div>
                         <div class="layout-group">
                             <div class="lbl">Y</div>
-                            <input type="number" id="lx-name-y" value="627" />
+                            <input type="number" id="lx-name-y" value="641" />
                         </div>
                         <div class="layout-group">
                             <div class="lbl">Size</div>
-                            <input type="number" id="lx-name-size" value="54" />
+                            <input type="number" id="lx-name-size" value="48" />
                         </div>
 
                         <div class="layout-heading">Years of Service</div>
@@ -706,14 +706,14 @@
                         </div>
                         <div class="layout-group">
                             <div class="lbl">Y</div>
-                            <input type="number" id="lx-years-y" value="512" />
+                            <input type="number" id="lx-years-y" value="530" />
                         </div>
                         <div class="layout-group">
                             <div class="lbl">Size</div>
                             <input
                                 type="number"
                                 id="lx-years-size"
-                                value="74"
+                                value="66"
                             />
                         </div>
 
@@ -724,11 +724,11 @@
                         </div>
                         <div class="layout-group">
                             <div class="lbl">Y</div>
-                            <input type="number" id="lx-date-y" value="468" />
+                            <input type="number" id="lx-date-y" value="478" />
                         </div>
                         <div class="layout-group">
                             <div class="lbl">Size</div>
-                            <input type="number" id="lx-date-size" value="40" />
+                            <input type="number" id="lx-date-size" value="36" />
                         </div>
 
                         <div class="layout-heading">Star Badge</div>
@@ -1124,10 +1124,10 @@
                 const anniversaryText = `With ${pronoun} ${star} anniversary of`;
 
                 const layout = getLayout();
-                drawCentred(anniversaryText,   layout.anniv, rgb(0.12, 0.08, 0.35));
-                drawCentred(name,              layout.name,  rgb(0.12, 0.08, 0.35));
-                drawCentred(yearsLabel(years), layout.years, rgb(0.25, 0.18, 0.45));
-                drawCentred(formatDate(date),  layout.date,  rgb(0.40, 0.40, 0.40));
+                drawCentred(anniversaryText,   layout.anniv, rgb(0, 0, 0));
+                drawCentred(name,              layout.name,  rgb(0.059, 0.408, 0.651));
+                drawCentred(yearsLabel(years), layout.years, rgb(0.059, 0.408, 0.651));
+                drawCentred(formatDate(date),  layout.date,  rgb(0, 0, 0));
 
                 // Draw signature in Blank Script font
                 const signee = document.getElementById("f-signee").value.trim();

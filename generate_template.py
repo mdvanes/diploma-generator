@@ -4,9 +4,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 pdfmetrics.registerFont(TTFont('Diploma', 'assets/Diploma.ttf'))
 
-# A3 landscape
 W, H = 1190.55, 841.89
-
 c = canvas.Canvas('assets/template.pdf', pagesize=(W, H))
 
 # Background (cream)
@@ -23,22 +21,38 @@ c.setStrokeColorRGB(0.784314, 0.658824, 0.509804)
 c.setLineWidth(0.8)
 c.rect(35.4, 35.4, W - 70.8, H - 70.8, fill=0, stroke=1)
 
-# Static text colour
-c.setFillColorRGB(0.101961, 0.101961, 0.101961)
+DARK = (0.101961, 0.101961, 0.101961)
+BLUE = (0.05882, 0.40784, 0.65098)   # #0f68a6
 
-# "The colleagues of Codestar hereby celebrate"
-c.setFont('Diploma', 40)
-c.drawCentredString(W / 2, 693, "The colleagues of Codestar hereby celebrate")
+def draw_mixed_centered(c, y, parts, font, size):
+    total_w = sum(pdfmetrics.stringWidth(t, font, size) for t, _ in parts)
+    x = (W - total_w) / 2
+    c.setFont(font, size)
+    for text, color in parts:
+        c.setFillColorRGB(*color)
+        c.drawString(x, y, text)
+        x += pdfmetrics.stringWidth(text, font, size)
 
-# "presented at Codestar HQ, Nieuwegein"
-c.setFont('Diploma', 40)
-c.drawCentredString(W / 2, 430, "presented at Codestar HQ, Nieuwegein")
+# "The colleagues of Codestar hereby celebrate" — size 36, baseline y=696
+draw_mixed_centered(c, 696, [
+    ("The colleagues of ",         DARK),
+    ("C",                          BLUE),
+    ("odestar hereby celebrate",   DARK),
+], 'Diploma', 36)
 
-# "Rector Magnificus" (lower right)
-c.setFont('Diploma', 18)
-c.drawString(863, 316, "Rector Magnificus")
+# "presented at Codestar HQ, Nieuwegein" — size 36, baseline y=433
+draw_mixed_centered(c, 433, [
+    ("presented at ",              DARK),
+    ("C",                          BLUE),
+    ("odestar HQ, Nieuwegein",     DARK),
+], 'Diploma', 36)
 
-# Signature line under Rector Magnificus
+# "Rector Magnificus" — size 16, baseline y=317
+c.setFillColorRGB(*DARK)
+c.setFont('Diploma', 16)
+c.drawString(863, 317, "Rector Magnificus")
+
+# Signature line
 c.setStrokeColorRGB(0.2, 0.2, 0.2)
 c.setLineWidth(1.0)
 c.line(840, 298, 1005, 298)
