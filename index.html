@@ -1317,10 +1317,14 @@
                     if (!bytes) return;
 
                     state.lastPdfBytes = bytes;
-                    state.lastFilename =
-                        slugName(
-                            document.getElementById("f-name").value.trim(),
-                        ) + ".pdf";
+                    const [datePrefixYear, datePrefixMonth] = document
+                        .getElementById("f-date")
+                        .value.trim()
+                        .split("-");
+                    const datePrefix = `${datePrefixYear}${datePrefixMonth}`;
+                    state.lastFilename = `${datePrefix}_AnniversaryCodestar_${slugName(
+                        document.getElementById("f-name").value.trim(),
+                    )}.pdf`;
 
                     const blob = new Blob([bytes], { type: "application/pdf" });
                     const iframe = document.getElementById("preview");
