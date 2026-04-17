@@ -59,3 +59,10 @@ Default layout (matches the included `template.pdf`):
 | [pdf-lib](https://pdf-lib.js.org/) | 1.17.1 | PDF manipulation in-browser |
 
 Loaded from `unpkg.com` CDN — no npm install needed.
+
+## Fonts
+
+Make sure you have the appropriate licenses to use the fonts:
+
+- Blank Script font: https://www.dafont.com/blank-script.font
+- Diploma font: https://www.cufonfonts.com/font/diploma
