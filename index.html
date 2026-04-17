@@ -1,818 +1,1239 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diploma Generator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Diploma Generator</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-    :root {
-      --ink:       #1a1410;
-      --ink-muted: #7a6e65;
-      --paper:     #f5f0e8;
-      --cream:     #ede7d9;
-      --rule:      #d4c9b5;
-      --accent:    #2c4a3e;
-      --danger:    #8b2e2e;
-    }
+            :root {
+                --ink: #1a1410;
+                --ink-muted: #7a6e65;
+                --paper: #f5f0e8;
+                --cream: #ede7d9;
+                --rule: #d4c9b5;
+                --accent: #2c4a3e;
+                --danger: #8b2e2e;
+            }
 
-    html, body {
-      height: 100%;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-    }
+            html,
+            body {
+                height: 100%;
+                background: var(--paper);
+                color: var(--ink);
+                font-family: "DM Mono", monospace;
+                font-size: 13px;
+            }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-    }
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 0;
+            }
 
-    .shell {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      grid-template-rows: auto auto 1fr auto;
-    }
+            .shell {
+                position: relative;
+                z-index: 1;
+                min-height: 100vh;
+                display: grid;
+                grid-template-columns: 380px 1fr;
+                grid-template-rows: auto auto 1fr auto;
+            }
 
-    /* ── Header ── */
-    header {
-      grid-column: 1 / -1;
-      border-bottom: 1px solid var(--rule);
-      padding: 28px 40px;
-      display: flex;
-      align-items: baseline;
-      gap: 20px;
-    }
+            /* ── Header ── */
+            header {
+                grid-column: 1 / -1;
+                border-bottom: 1px solid var(--rule);
+                padding: 28px 40px;
+                display: flex;
+                align-items: baseline;
+                gap: 20px;
+            }
 
-    header h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 26px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
+            header h1 {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 26px;
+                font-weight: 600;
+                letter-spacing: 0.02em;
+            }
 
-    /* ── Asset status strip ── */
-    #asset-strip {
-      grid-column: 1 / -1;
-      background: var(--cream);
-      border-bottom: 1px solid var(--rule);
-      padding: 10px 40px;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px 20px;
-      font-size: 10px;
-      letter-spacing: 0.08em;
-    }
+            /* ── Asset status strip ── */
+            #asset-strip {
+                grid-column: 1 / -1;
+                background: var(--cream);
+                border-bottom: 1px solid var(--rule);
+                padding: 10px 40px;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 6px 20px;
+                font-size: 10px;
+                letter-spacing: 0.08em;
+            }
 
-    #asset-strip .strip-label {
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-      margin-right: 6px;
-    }
+            #asset-strip .strip-label {
+                font-size: 9px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--ink-muted);
+                margin-right: 6px;
+            }
 
-    .asset-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--ink-muted);
-      transition: color 0.3s;
-    }
+            .asset-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: var(--ink-muted);
+                transition: color 0.3s;
+            }
 
-    .asset-item .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--rule);
-      flex-shrink: 0;
-      transition: background 0.3s;
-    }
+            .asset-item .dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--rule);
+                flex-shrink: 0;
+                transition: background 0.3s;
+            }
 
-    .asset-item.loading .dot { animation: pulse 1s ease-in-out infinite; }
-    .asset-item.ok  .dot     { background: #4a7c59; }
-    .asset-item.ok           { color: var(--ink); }
-    .asset-item.err .dot     { background: var(--danger); }
-    .asset-item.err          { color: var(--danger); }
+            .asset-item.loading .dot {
+                animation: pulse 1s ease-in-out infinite;
+            }
+            .asset-item.ok .dot {
+                background: #4a7c59;
+            }
+            .asset-item.ok {
+                color: var(--ink);
+            }
+            .asset-item.err .dot {
+                background: var(--danger);
+            }
+            .asset-item.err {
+                color: var(--danger);
+            }
 
-    @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 0.3;
+                }
+                50% {
+                    opacity: 1;
+                }
+            }
 
-    /* ── Sidebar ── */
-    .panel {
-      border-right: 1px solid var(--rule);
-      padding: 36px 40px;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
+            /* ── Sidebar ── */
+            .panel {
+                border-right: 1px solid var(--rule);
+                padding: 36px 40px;
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+            }
 
-    .section-label {
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--rule);
-      margin-bottom: 24px;
-    }
+            .section-label {
+                font-size: 9px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--ink-muted);
+                padding-bottom: 14px;
+                border-bottom: 1px solid var(--rule);
+                margin-bottom: 24px;
+            }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      margin-bottom: 24px;
-    }
+            .field {
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+                margin-bottom: 24px;
+            }
 
-    label {
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-    }
+            label {
+                font-size: 10px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--ink-muted);
+            }
 
-    input[type="text"],
-    input[type="date"],
-    input[type="number"] {
-      background: var(--cream);
-      border: 1px solid var(--rule);
-      border-radius: 2px;
-      color: var(--ink);
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      padding: 10px 14px;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      width: 100%;
-    }
+            input[type="text"],
+            input[type="date"],
+            input[type="number"] {
+                background: var(--cream);
+                border: 1px solid var(--rule);
+                border-radius: 2px;
+                color: var(--ink);
+                font-family: "DM Mono", monospace;
+                font-size: 13px;
+                padding: 10px 14px;
+                outline: none;
+                transition:
+                    border-color 0.15s,
+                    box-shadow 0.15s;
+                width: 100%;
+            }
 
-    input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(44,74,62,0.12);
-    }
+            input:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 2px rgba(44, 74, 62, 0.12);
+            }
 
-    input[type="number"]                              { -moz-appearance: textfield; }
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button   { -webkit-appearance: none; }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
 
-    /* ── Star selector ── */
-    .star-group {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 32px;
-    }
+            /* ── Star selector ── */
+            .star-group {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin-bottom: 32px;
+            }
 
-    .star-opt input { display: none; }
+            .star-opt input {
+                display: none;
+            }
 
-    .star-opt label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 8px;
-      background: var(--cream);
-      border: 1px solid var(--rule);
-      border-radius: 2px;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-size: 10px;
-    }
+            .star-opt label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding: 14px 8px;
+                background: var(--cream);
+                border: 1px solid var(--rule);
+                border-radius: 2px;
+                cursor: pointer;
+                transition:
+                    border-color 0.15s,
+                    background 0.15s;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-size: 10px;
+            }
 
-    .star-opt label svg { transition: transform 0.15s; }
-    .star-opt input:checked + label { border-color: var(--accent); background: rgba(44,74,62,0.06); }
-    .star-opt input:checked + label svg { transform: scale(1.15); }
+            .star-opt label svg {
+                transition: transform 0.15s;
+            }
+            .star-opt input:checked + label {
+                border-color: var(--accent);
+                background: rgba(44, 74, 62, 0.06);
+            }
+            .star-opt input:checked + label svg {
+                transform: scale(1.15);
+            }
 
-    /* ── Layout accordion ── */
-    .layout-accordion {
-      margin-bottom: 28px;
-    }
+            /* ── Layout accordion ── */
+            .layout-accordion {
+                margin-bottom: 28px;
+            }
 
-    .layout-accordion summary {
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-      cursor: pointer;
-      padding: 12px 0;
-      border-top: 1px solid var(--rule);
-      user-select: none;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .layout-accordion summary::after { content: '↓'; transition: transform 0.2s; }
-    .layout-accordion[open] summary::after { transform: rotate(180deg); }
+            .layout-accordion summary {
+                font-size: 10px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--ink-muted);
+                cursor: pointer;
+                padding: 12px 0;
+                border-top: 1px solid var(--rule);
+                user-select: none;
+                list-style: none;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .layout-accordion summary::after {
+                content: "↓";
+                transition: transform 0.2s;
+            }
+            .layout-accordion[open] summary::after {
+                transform: rotate(180deg);
+            }
 
-    .layout-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      padding: 16px 0 8px;
-    }
+            .layout-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 8px;
+                padding: 16px 0 8px;
+            }
 
-    .layout-grid input { padding: 7px 10px; font-size: 12px; }
-    .layout-group { display: flex; flex-direction: column; }
+            .layout-grid input {
+                padding: 7px 10px;
+                font-size: 12px;
+            }
+            .layout-group {
+                display: flex;
+                flex-direction: column;
+            }
 
-    .lbl {
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-      margin-bottom: 4px;
-    }
+            .lbl {
+                font-size: 9px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--ink-muted);
+                margin-bottom: 4px;
+            }
 
-    .layout-heading {
-      grid-column: 1 / -1;
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-      padding-top: 10px;
-      border-top: 1px solid var(--rule);
-      margin-top: 4px;
-    }
-    .layout-heading:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+            .layout-heading {
+                grid-column: 1 / -1;
+                font-size: 9px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--ink-muted);
+                padding-top: 10px;
+                border-top: 1px solid var(--rule);
+                margin-top: 4px;
+            }
+            .layout-heading:first-child {
+                border-top: none;
+                padding-top: 0;
+                margin-top: 0;
+            }
 
-    /* ── Generate button ── */
-    .generate-btn { margin-top: auto; padding-top: 32px; }
+            /* ── Generate button ── */
+            .generate-btn {
+                margin-top: auto;
+                padding-top: 32px;
+            }
 
-    button.primary {
-      width: 100%;
-      padding: 16px;
-      background: var(--accent);
-      color: var(--paper);
-      border: none;
-      border-radius: 2px;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-    }
+            button.primary {
+                width: 100%;
+                padding: 16px;
+                background: var(--accent);
+                color: var(--paper);
+                border: none;
+                border-radius: 2px;
+                font-family: "DM Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition:
+                    background 0.15s,
+                    transform 0.1s;
+            }
 
-    button.primary:hover:not(:disabled)  { background: #1e3329; }
-    button.primary:active:not(:disabled) { transform: scale(0.99); }
-    button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
+            button.primary:hover:not(:disabled) {
+                background: #1e3329;
+            }
+            button.primary:active:not(:disabled) {
+                transform: scale(0.99);
+            }
+            button.primary:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
 
-    .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+            .btn-inner {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
 
-    .spinner {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
-    .generating .spinner  { display: block; }
-    .generating .btn-text { opacity: 0.7; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+            .spinner {
+                width: 14px;
+                height: 14px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-top-color: #fff;
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+                display: none;
+            }
+            .generating .spinner {
+                display: block;
+            }
+            .generating .btn-text {
+                opacity: 0.7;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
 
-    /* ── Preview pane ── */
-    .preview-pane {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 48px;
-      gap: 20px;
-      background: var(--cream);
-    }
+            /* ── Preview pane ── */
+            .preview-pane {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 48px;
+                gap: 20px;
+                background: var(--cream);
+            }
 
-    .preview-empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      color: var(--ink-muted);
-    }
-    .preview-empty svg { opacity: 0.3; }
-    .preview-empty p   { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+            .preview-empty {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 14px;
+                color: var(--ink-muted);
+            }
+            .preview-empty svg {
+                opacity: 0.3;
+            }
+            .preview-empty p {
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
 
-    iframe#preview {
-      width: 100%;
-      max-width: 860px;
-      aspect-ratio: 842 / 595;
-      border: 1px solid var(--rule);
-      border-radius: 2px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-      background: #fff;
-      display: none;
-    }
+            iframe#preview {
+                width: 100%;
+                max-width: 860px;
+                aspect-ratio: 842 / 595;
+                border: 1px solid var(--rule);
+                border-radius: 2px;
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+                background: #fff;
+                display: none;
+            }
 
-    .preview-actions { display: none; gap: 12px; }
+            .preview-actions {
+                display: none;
+                gap: 12px;
+            }
 
-    button.secondary {
-      padding: 10px 22px;
-      background: transparent;
-      color: var(--ink);
-      border: 1px solid var(--rule);
-      border-radius: 2px;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    button.secondary:hover { border-color: var(--ink); background: rgba(0,0,0,0.03); }
+            button.secondary {
+                padding: 10px 22px;
+                background: transparent;
+                color: var(--ink);
+                border: 1px solid var(--rule);
+                border-radius: 2px;
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition:
+                    border-color 0.15s,
+                    background 0.15s;
+            }
+            button.secondary:hover {
+                border-color: var(--ink);
+                background: rgba(0, 0, 0, 0.03);
+            }
 
-    /* ── Footer ── */
-    footer {
-      grid-column: 1 / -1;
-      border-top: 1px solid var(--rule);
-      padding: 14px 40px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--ink-muted);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-    }
-    footer .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rule); }
+            /* ── Footer ── */
+            footer {
+                grid-column: 1 / -1;
+                border-top: 1px solid var(--rule);
+                padding: 14px 40px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--ink-muted);
+                font-size: 10px;
+                letter-spacing: 0.1em;
+            }
+            footer .dot {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: var(--rule);
+            }
 
-    /* ── Toast ── */
-    #toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--ink);
-      color: var(--paper);
-      padding: 12px 18px 12px 24px;
-      border-radius: 2px;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-      z-index: 999;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      max-width: 560px;
-      user-select: text;
-    }
-    #toast.show  { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-    #toast.error { background: var(--danger); }
-    #toast-msg   { flex: 1; }
-    #toast-close {
-      display: none;
-      flex-shrink: 0;
-      background: none;
-      border: 1px solid rgba(255,255,255,0.4);
-      color: inherit;
-      opacity: 0.8;
-      cursor: pointer;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      padding: 3px 8px;
-      font-family: inherit;
-      border-radius: 2px;
-    }
-    #toast-close:hover { opacity: 1; background: rgba(255,255,255,0.15); }
-    #toast.error #toast-close { display: block; }
+            /* ── Toast ── */
+            #toast {
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%) translateY(20px);
+                background: var(--ink);
+                color: var(--paper);
+                padding: 12px 18px 12px 24px;
+                border-radius: 2px;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                opacity: 0;
+                transition:
+                    opacity 0.2s,
+                    transform 0.2s;
+                z-index: 999;
+                pointer-events: none;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                max-width: 560px;
+                user-select: text;
+            }
+            #toast.show {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+                pointer-events: auto;
+            }
+            #toast.error {
+                background: var(--danger);
+            }
+            #toast-msg {
+                flex: 1;
+            }
+            #toast-close {
+                display: none;
+                flex-shrink: 0;
+                background: none;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                color: inherit;
+                opacity: 0.8;
+                cursor: pointer;
+                font-size: 10px;
+                letter-spacing: 0.1em;
+                padding: 3px 8px;
+                font-family: inherit;
+                border-radius: 2px;
+            }
+            #toast-close:hover {
+                opacity: 1;
+                background: rgba(255, 255, 255, 0.15);
+            }
+            #toast.error #toast-close {
+                display: block;
+            }
 
-    @media (max-width: 860px) {
-      .shell { grid-template-columns: 1fr; }
-      .panel { border-right: none; border-bottom: 1px solid var(--rule); }
-      .preview-pane { min-height: 50vh; padding: 28px; }
-    }
-  </style>
-</head>
-<body>
-<div class="shell">
+            @media (max-width: 860px) {
+                .shell {
+                    grid-template-columns: 1fr;
+                }
+                .panel {
+                    border-right: none;
+                    border-bottom: 1px solid var(--rule);
+                }
+                .preview-pane {
+                    min-height: 50vh;
+                    padding: 28px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="shell">
+            <!-- ── Header ── -->
+            <header>
+                <h1>Diploma Generator</h1>
+            </header>
 
-  <!-- ── Header ── -->
-  <header>
-    <h1>Diploma Generator</h1>
-  </header>
+            <!-- ── Asset status strip ── -->
+            <div id="asset-strip">
+                <span class="strip-label">Assets</span>
+                <div class="asset-item loading" id="as-template">
+                    <div class="dot"></div>
+                    <span>template.pdf</span>
+                </div>
+                <div class="asset-item loading" id="as-font">
+                    <div class="dot"></div>
+                    <span>Diploma.ttf</span>
+                </div>
+                <div class="asset-item loading" id="as-seal">
+                    <div class="dot"></div>
+                    <span>seal.png</span>
+                </div>
+                <div class="asset-item loading" id="as-star-bronze">
+                    <div class="dot"></div>
+                    <span>star_bronze.png</span>
+                </div>
+                <div class="asset-item loading" id="as-star-silver">
+                    <div class="dot"></div>
+                    <span>star_silver.png</span>
+                </div>
+                <div class="asset-item loading" id="as-star-gold">
+                    <div class="dot"></div>
+                    <span>star_gold.png</span>
+                </div>
+                <div class="asset-item loading" id="as-blank-script">
+                    <div class="dot"></div>
+                    <span>Blank Script.otf</span>
+                </div>
+            </div>
 
-  <!-- ── Asset status strip ── -->
-  <div id="asset-strip">
-    <span class="strip-label">Assets</span>
-    <div class="asset-item loading" id="as-template">   <div class="dot"></div><span>template.pdf</span></div>
-    <div class="asset-item loading" id="as-font">       <div class="dot"></div><span>Diploma.ttf</span></div>
-    <div class="asset-item loading" id="as-seal">       <div class="dot"></div><span>seal.png</span></div>
-    <div class="asset-item loading" id="as-star-bronze"><div class="dot"></div><span>star_bronze.png</span></div>
-    <div class="asset-item loading" id="as-star-silver"><div class="dot"></div><span>star_silver.png</span></div>
-    <div class="asset-item loading" id="as-star-gold">  <div class="dot"></div><span>star_gold.png</span></div>
-    <div class="asset-item loading" id="as-blank-script"><div class="dot"></div><span>Blank Script.otf</span></div>
-  </div>
+            <!-- ── Sidebar ── -->
+            <aside class="panel">
+                <div class="section-label">Recipient Details</div>
 
-  <!-- ── Sidebar ── -->
-  <aside class="panel">
+                <div class="field">
+                    <label for="f-name">Full Name</label>
+                    <input
+                        type="text"
+                        id="f-name"
+                        placeholder="e.g. Jane Smith"
+                        value="John Doe"
+                    />
+                </div>
 
-    <div class="section-label">Recipient Details</div>
+                <div class="field">
+                    <label for="f-date">Date of Issue</label>
+                    <input type="date" id="f-date" />
+                </div>
 
-    <div class="field">
-      <label for="f-name">Full Name</label>
-      <input type="text" id="f-name" placeholder="e.g. Jane Smith" />
-    </div>
+                <div class="field">
+                    <label for="f-years">Years of Service</label>
+                    <input
+                        type="number"
+                        id="f-years"
+                        min="1"
+                        max="99"
+                        placeholder="e.g. 10"
+                        value="5"
+                    />
+                </div>
 
-    <div class="field">
-      <label for="f-date">Date of Issue</label>
-      <input type="date" id="f-date" />
-    </div>
+                <div class="field">
+                    <label for="f-signee">Signed by</label>
+                    <input
+                        type="text"
+                        id="f-signee"
+                        placeholder="e.g. Jane Smith"
+                        value="El Capitan"
+                    />
+                </div>
 
-    <div class="field">
-      <label for="f-years">Years of Service</label>
-      <input type="number" id="f-years" min="1" max="99" placeholder="e.g. 10" />
-    </div>
+                <label style="margin-bottom: 10px">Award Tier</label>
+                <div class="star-group">
+                    <div class="star-opt">
+                        <input
+                            type="radio"
+                            name="star"
+                            id="star-bronze"
+                            value="bronze"
+                            checked
+                        />
+                        <label for="star-bronze">
+                            <svg width="28" height="28" viewBox="0 0 24 24">
+                                <polygon
+                                    points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                                    fill="#cd7f32"
+                                    stroke="#a0522d"
+                                    stroke-width="1.2"
+                                    stroke-linejoin="round"
+                                /></svg
+                            >Bronze
+                        </label>
+                    </div>
+                    <div class="star-opt">
+                        <input
+                            type="radio"
+                            name="star"
+                            id="star-silver"
+                            value="silver"
+                        />
+                        <label for="star-silver">
+                            <svg width="28" height="28" viewBox="0 0 24 24">
+                                <polygon
+                                    points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                                    fill="#c0c0c0"
+                                    stroke="#708090"
+                                    stroke-width="1.2"
+                                    stroke-linejoin="round"
+                                /></svg
+                            >Silver
+                        </label>
+                    </div>
+                    <div class="star-opt">
+                        <input
+                            type="radio"
+                            name="star"
+                            id="star-gold"
+                            value="gold"
+                        />
+                        <label for="star-gold">
+                            <svg width="28" height="28" viewBox="0 0 24 24">
+                                <polygon
+                                    points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                                    fill="#ffd700"
+                                    stroke="#b8860b"
+                                    stroke-width="1.2"
+                                    stroke-linejoin="round"
+                                /></svg
+                            >Gold
+                        </label>
+                    </div>
+                </div>
 
-    <div class="field">
-      <label for="f-signee">Signed by (Rector Magnificus)</label>
-      <input type="text" id="f-signee" placeholder="e.g. Jane Smith" />
-    </div>
+                <!-- Layout accordion -->
+                <details class="layout-accordion">
+                    <summary>Layout Configuration</summary>
+                    <div class="layout-grid">
+                        <div class="layout-heading">Name</div>
+                        <div class="layout-group">
+                            <div class="lbl">X</div>
+                            <input type="number" id="lx-name-x" value="421" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Y</div>
+                            <input type="number" id="lx-name-y" value="310" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Size</div>
+                            <input type="number" id="lx-name-size" value="42" />
+                        </div>
 
-    <label style="margin-bottom:10px">Award Tier</label>
-    <div class="star-group">
-      <div class="star-opt">
-        <input type="radio" name="star" id="star-bronze" value="bronze" />
-        <label for="star-bronze">
-          <svg width="28" height="28" viewBox="0 0 24 24">
-            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-              fill="#cd7f32" stroke="#a0522d" stroke-width="1.2" stroke-linejoin="round"/>
-          </svg>Bronze
-        </label>
-      </div>
-      <div class="star-opt">
-        <input type="radio" name="star" id="star-silver" value="silver" checked />
-        <label for="star-silver">
-          <svg width="28" height="28" viewBox="0 0 24 24">
-            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-              fill="#c0c0c0" stroke="#708090" stroke-width="1.2" stroke-linejoin="round"/>
-          </svg>Silver
-        </label>
-      </div>
-      <div class="star-opt">
-        <input type="radio" name="star" id="star-gold" value="gold" />
-        <label for="star-gold">
-          <svg width="28" height="28" viewBox="0 0 24 24">
-            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-              fill="#ffd700" stroke="#b8860b" stroke-width="1.2" stroke-linejoin="round"/>
-          </svg>Gold
-        </label>
-      </div>
-    </div>
+                        <div class="layout-heading">Years of Service</div>
+                        <div class="layout-group">
+                            <div class="lbl">X</div>
+                            <input type="number" id="lx-years-x" value="421" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Y</div>
+                            <input type="number" id="lx-years-y" value="248" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Size</div>
+                            <input
+                                type="number"
+                                id="lx-years-size"
+                                value="22"
+                            />
+                        </div>
 
-    <!-- Layout accordion -->
-    <details class="layout-accordion">
-      <summary>Layout Configuration</summary>
-      <div class="layout-grid">
+                        <div class="layout-heading">Date</div>
+                        <div class="layout-group">
+                            <div class="lbl">X</div>
+                            <input type="number" id="lx-date-x" value="421" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Y</div>
+                            <input type="number" id="lx-date-y" value="195" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Size</div>
+                            <input type="number" id="lx-date-size" value="14" />
+                        </div>
 
-        <div class="layout-heading">Name</div>
-        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-name-x" value="421" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-name-y" value="310" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-name-size" value="42" /></div>
+                        <div class="layout-heading">Star Badge</div>
+                        <div class="layout-group">
+                            <div class="lbl">X</div>
+                            <input type="number" id="lx-star-x" value="371" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Y</div>
+                            <input type="number" id="lx-star-y" value="60" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Size</div>
+                            <input
+                                type="number"
+                                id="lx-star-size"
+                                value="100"
+                            />
+                        </div>
 
-        <div class="layout-heading">Years of Service</div>
-        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-years-x" value="421" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-years-y" value="248" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-years-size" value="22" /></div>
+                        <div class="layout-heading">Seal</div>
+                        <div class="layout-group">
+                            <div class="lbl">X</div>
+                            <input type="number" id="lx-seal-x" value="50" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Y</div>
+                            <input type="number" id="lx-seal-y" value="60" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Size</div>
+                            <input type="number" id="lx-seal-size" value="80" />
+                        </div>
 
-        <div class="layout-heading">Date</div>
-        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-date-x" value="421" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-date-y" value="195" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-date-size" value="14" /></div>
+                        <div class="layout-heading">Signature</div>
+                        <div class="layout-group">
+                            <div class="lbl">X</div>
+                            <input type="number" id="lx-sig-x" value="680" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Y</div>
+                            <input type="number" id="lx-sig-y" value="95" />
+                        </div>
+                        <div class="layout-group">
+                            <div class="lbl">Size</div>
+                            <input type="number" id="lx-sig-size" value="36" />
+                        </div>
+                    </div>
+                </details>
 
-        <div class="layout-heading">Star Badge</div>
-        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-star-x" value="371" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-star-y" value="60" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-star-size" value="100" /></div>
+                <div class="generate-btn">
+                    <button class="primary" id="btn-generate" disabled>
+                        <div class="btn-inner">
+                            <div class="spinner"></div>
+                            <span class="btn-text">Loading assets…</span>
+                        </div>
+                    </button>
+                </div>
+            </aside>
 
-        <div class="layout-heading">Seal</div>
-        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-seal-x" value="50" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-seal-y" value="60" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-seal-size" value="80" /></div>
+            <!-- ── Preview pane ── -->
+            <main class="preview-pane">
+                <div class="preview-empty" id="preview-empty">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                        <rect
+                            x="10"
+                            y="8"
+                            width="44"
+                            height="56"
+                            rx="3"
+                            stroke="#7a6e65"
+                            stroke-width="1.5"
+                        />
+                        <line
+                            x1="20"
+                            y1="24"
+                            x2="44"
+                            y2="24"
+                            stroke="#7a6e65"
+                            stroke-width="1.5"
+                        />
+                        <line
+                            x1="20"
+                            y1="32"
+                            x2="44"
+                            y2="32"
+                            stroke="#7a6e65"
+                            stroke-width="1.5"
+                        />
+                        <line
+                            x1="20"
+                            y1="40"
+                            x2="36"
+                            y2="40"
+                            stroke="#7a6e65"
+                            stroke-width="1.5"
+                        />
+                    </svg>
+                    <p>Your certificate will appear here</p>
+                </div>
+                <iframe id="preview" title="Certificate Preview"></iframe>
+                <div class="preview-actions" id="preview-actions">
+                    <button class="secondary" id="btn-download">
+                        ↓ Download PDF
+                    </button>
+                    <button class="secondary" id="btn-regenerate">
+                        ↺ Regenerate
+                    </button>
+                </div>
+            </main>
 
-        <div class="layout-heading">Signature</div>
-        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-sig-x" value="680" /></div>
-        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-sig-y" value="95" /></div>
-        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-sig-size" value="36" /></div>
-
-      </div>
-    </details>
-
-    <div class="generate-btn">
-      <button class="primary" id="btn-generate" disabled>
-        <div class="btn-inner">
-          <div class="spinner"></div>
-          <span class="btn-text">Loading assets…</span>
+            <!-- ── Footer ── -->
+            <footer>
+                <span>Runs entirely in your browser</span>
+                <div class="dot"></div>
+                <span>Powered by pdf-lib</span>
+                <div class="dot"></div>
+                <span>No data is sent to any server</span>
+            </footer>
         </div>
-      </button>
-    </div>
+        <div id="toast">
+            <span id="toast-msg"></span
+            ><button
+                id="toast-close"
+                onclick="document.getElementById('toast').className = ''"
+            >
+                dismiss
+            </button>
+        </div>
 
-  </aside>
+        <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+        <script src="https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+        <script>
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // ASSET PATHS  — edit these to match your file layout
+            // All paths are relative to index.html
+            // ═══════════════════════════════════════════════════════════════════════════════
+            const ASSETS = {
+                template: "assets/template.pdf",
+                font: "assets/Diploma.ttf",
+                seal: "assets/seal.png",
+                starBronze: "assets/star_bronze.png",
+                starSilver: "assets/star_silver.png",
+                starGold: "assets/star_gold.png",
+                blankScript: "assets/Blank%20Script.otf",
+            };
 
-  <!-- ── Preview pane ── -->
-  <main class="preview-pane">
-    <div class="preview-empty" id="preview-empty">
-      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-        <rect x="10" y="8" width="44" height="56" rx="3" stroke="#7a6e65" stroke-width="1.5"/>
-        <line x1="20" y1="24" x2="44" y2="24" stroke="#7a6e65" stroke-width="1.5"/>
-        <line x1="20" y1="32" x2="44" y2="32" stroke="#7a6e65" stroke-width="1.5"/>
-        <line x1="20" y1="40" x2="36" y2="40" stroke="#7a6e65" stroke-width="1.5"/>
-      </svg>
-      <p>Your certificate will appear here</p>
-    </div>
-    <iframe id="preview" title="Certificate Preview"></iframe>
-    <div class="preview-actions" id="preview-actions">
-      <button class="secondary" id="btn-download">↓ Download PDF</button>
-      <button class="secondary" id="btn-regenerate">↺ Regenerate</button>
-    </div>
-  </main>
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // STATE
+            // ═══════════════════════════════════════════════════════════════════════════════
+            const state = {
+                template: null, // ArrayBuffer
+                font: null, // ArrayBuffer
+                seal: null, // { buffer, isPng }
+                stars: {
+                    bronze: null, // { buffer, isPng }
+                    silver: null,
+                    gold: null,
+                },
+                lastPdfBytes: null,
+                lastFilename: null,
+                blankScriptFont: null,
+            };
 
-  <!-- ── Footer ── -->
-  <footer>
-    <span>Runs entirely in your browser</span>
-    <div class="dot"></div>
-    <span>Powered by pdf-lib</span>
-    <div class="dot"></div>
-    <span>No data is sent to any server</span>
-  </footer>
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // HELPERS
+            // ═══════════════════════════════════════════════════════════════════════════════
+            function toast(msg, isError = false) {
+                const el = document.getElementById("toast");
+                document.getElementById("toast-msg").textContent = msg;
+                el.className = "show" + (isError ? " error" : "");
+                clearTimeout(el._t);
+                // Errors stay until dismissed; success messages auto-clear after 3.2s
+                if (!isError) {
+                    el._t = setTimeout(() => (el.className = ""), 3200);
+                }
+            }
 
-</div>
-<div id="toast"><span id="toast-msg"></span><button id="toast-close" onclick="document.getElementById('toast').className=''">dismiss</button></div>
+            function setAssetStatus(id, status) {
+                const el = document.getElementById("as-" + id);
+                if (el) el.className = "asset-item " + status;
+            }
 
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script src="https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
-<script>
-// ═══════════════════════════════════════════════════════════════════════════════
-// ASSET PATHS  — edit these to match your file layout
-// All paths are relative to index.html
-// ═══════════════════════════════════════════════════════════════════════════════
-const ASSETS = {
-  template:   'assets/template.pdf',
-  font:       'assets/Diploma.ttf',
-  seal:       'assets/seal.png',
-  starBronze: 'assets/star_bronze.png',
-  starSilver: 'assets/star_silver.png',
-  starGold:   'assets/star_gold.png',
-  blankScript: 'assets/Blank%20Script.otf',
-};
+            function formatDate(raw) {
+                if (!raw) return "";
+                const d = new Date(raw + "T00:00:00");
+                return isNaN(d.getTime())
+                    ? raw
+                    : d.toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                      });
+            }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════════════════════════
-const state = {
-  template:     null,   // ArrayBuffer
-  font:         null,   // ArrayBuffer
-  seal:         null,   // { buffer, isPng }
-  stars: {
-    bronze:     null,   // { buffer, isPng }
-    silver:     null,
-    gold:       null,
-  },
-  lastPdfBytes: null,
-  lastFilename: null,
-  blankScriptFont: null,
-};
+            function yearsLabel(y) {
+                const n = parseInt(y);
+                return n === 1 ? "1 Year of Service" : `${n} Years of Service`;
+            }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════════
-function toast(msg, isError = false) {
-  const el = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  el.className = 'show' + (isError ? ' error' : '');
-  clearTimeout(el._t);
-  // Errors stay until dismissed; success messages auto-clear after 3.2s
-  if (!isError) {
-    el._t = setTimeout(() => el.className = '', 3200);
-  }
-}
+            function slugName(name) {
+                return (name || "certificate")
+                    .replace(/\s+/g, "_")
+                    .replace(/[^a-zA-Z0-9_-]/g, "");
+            }
 
-function setAssetStatus(id, status) {
-  const el = document.getElementById('as-' + id);
-  if (el) el.className = 'asset-item ' + status;
-}
+            function isPng(url) {
+                return url.toLowerCase().endsWith(".png");
+            }
 
-function formatDate(raw) {
-  if (!raw) return '';
-  const d = new Date(raw + 'T00:00:00');
-  return isNaN(d.getTime()) ? raw
-    : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-}
+            async function fetchBinary(url) {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.arrayBuffer();
+            }
 
-function yearsLabel(y) {
-  const n = parseInt(y);
-  return n === 1 ? '1 Year of Service' : `${n} Years of Service`;
-}
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // ASSET LOADING
+            // Fetches all assets in parallel on page load. Each is independent — one
+            // failure won't block the others. The generate button only enables once the
+            // two critical assets (template + font) are ready.
+            // ═══════════════════════════════════════════════════════════════════════════════
+            async function fetchAssets() {
+                const btn = document.getElementById("btn-generate");
 
-function slugName(name) {
-  return (name || 'certificate').replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
-}
+                async function load(assetId, url, onSuccess) {
+                    setAssetStatus(assetId, "loading");
+                    try {
+                        const buf = await fetchBinary(url);
+                        onSuccess(buf);
+                        setAssetStatus(assetId, "ok");
+                    } catch (e) {
+                        console.warn(
+                            `[assets] Failed to fetch "${url}":`,
+                            e.message,
+                        );
+                        setAssetStatus(assetId, "err");
+                    }
+                }
 
-function isPng(url) {
-  return url.toLowerCase().endsWith('.png');
-}
+                await Promise.all([
+                    load("template", ASSETS.template, (buf) => {
+                        state.template = buf;
+                    }),
+                    load("font", ASSETS.font, (buf) => {
+                        state.font = buf;
+                    }),
+                    load("seal", ASSETS.seal, (buf) => {
+                        state.seal = { buffer: buf, isPng: isPng(ASSETS.seal) };
+                    }),
+                    load("star-bronze", ASSETS.starBronze, (buf) => {
+                        state.stars.bronze = {
+                            buffer: buf,
+                            isPng: isPng(ASSETS.starBronze),
+                        };
+                    }),
+                    load("star-silver", ASSETS.starSilver, (buf) => {
+                        state.stars.silver = {
+                            buffer: buf,
+                            isPng: isPng(ASSETS.starSilver),
+                        };
+                    }),
+                    load("star-gold", ASSETS.starGold, (buf) => {
+                        state.stars.gold = {
+                            buffer: buf,
+                            isPng: isPng(ASSETS.starGold),
+                        };
+                    }),
+                    load("blank-script", ASSETS.blankScript, (buf) => {
+                        state.blankScriptFont = buf;
+                    }),
+                ]);
 
-async function fetchBinary(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.arrayBuffer();
-}
+                if (state.template && state.font) {
+                    btn.disabled = false;
+                    btn.querySelector(".btn-text").textContent =
+                        "Generate Certificate";
+                } else {
+                    btn.querySelector(".btn-text").textContent =
+                        "Missing assets — see console";
+                }
+            }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ASSET LOADING
-// Fetches all assets in parallel on page load. Each is independent — one
-// failure won't block the others. The generate button only enables once the
-// two critical assets (template + font) are ready.
-// ═══════════════════════════════════════════════════════════════════════════════
-async function fetchAssets() {
-  const btn = document.getElementById('btn-generate');
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // LAYOUT CONFIG
+            // ═══════════════════════════════════════════════════════════════════════════════
+            function getLayout() {
+                const n = (id) =>
+                    parseFloat(document.getElementById(id).value) || 0;
+                return {
+                    name: {
+                        x: n("lx-name-x"),
+                        y: n("lx-name-y"),
+                        size: n("lx-name-size"),
+                        align: "center",
+                    },
+                    years: {
+                        x: n("lx-years-x"),
+                        y: n("lx-years-y"),
+                        size: n("lx-years-size"),
+                        align: "center",
+                    },
+                    date: {
+                        x: n("lx-date-x"),
+                        y: n("lx-date-y"),
+                        size: n("lx-date-size"),
+                        align: "center",
+                    },
+                    star: {
+                        x: n("lx-star-x"),
+                        y: n("lx-star-y"),
+                        size: n("lx-star-size"),
+                    },
+                    seal: {
+                        x: n("lx-seal-x"),
+                        y: n("lx-seal-y"),
+                        size: n("lx-seal-size"),
+                    },
+                    sig: {
+                        x: n("lx-sig-x"),
+                        y: n("lx-sig-y"),
+                        size: n("lx-sig-size"),
+                        align: "center",
+                    },
+                };
+            }
 
-  async function load(assetId, url, onSuccess) {
-    setAssetStatus(assetId, 'loading');
-    try {
-      const buf = await fetchBinary(url);
-      onSuccess(buf);
-      setAssetStatus(assetId, 'ok');
-    } catch (e) {
-      console.warn(`[assets] Failed to fetch "${url}":`, e.message);
-      setAssetStatus(assetId, 'err');
-    }
-  }
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // PDF GENERATION
+            // ═══════════════════════════════════════════════════════════════════════════════
+            async function generatePDF() {
+                const { PDFDocument, rgb, StandardFonts } = PDFLib;
 
-  await Promise.all([
-    load('template',    ASSETS.template,   buf => { state.template      = buf; }),
-    load('font',        ASSETS.font,       buf => { state.font          = buf; }),
-    load('seal',        ASSETS.seal,       buf => { state.seal          = { buffer: buf, isPng: isPng(ASSETS.seal) }; }),
-    load('star-bronze', ASSETS.starBronze, buf => { state.stars.bronze  = { buffer: buf, isPng: isPng(ASSETS.starBronze) }; }),
-    load('star-silver', ASSETS.starSilver, buf => { state.stars.silver  = { buffer: buf, isPng: isPng(ASSETS.starSilver) }; }),
-    load('star-gold',   ASSETS.starGold,   buf => { state.stars.gold    = { buffer: buf, isPng: isPng(ASSETS.starGold)   }; }),
-    load('blank-script', ASSETS.blankScript, buf => { state.blankScriptFont = buf; }),
-  ]);
+                const name = document.getElementById("f-name").value.trim();
+                const date = document.getElementById("f-date").value;
+                const years = document.getElementById("f-years").value;
+                const star = document.querySelector(
+                    'input[name="star"]:checked',
+                ).value;
 
-  if (state.template && state.font) {
-    btn.disabled = false;
-    btn.querySelector('.btn-text').textContent = 'Generate Certificate';
-  } else {
-    btn.querySelector('.btn-text').textContent = 'Missing assets — see console';
-  }
-}
+                // Validate form
+                if (!name) {
+                    toast("Please enter a recipient name", true);
+                    return null;
+                }
+                if (!date) {
+                    toast("Please select a date", true);
+                    return null;
+                }
+                if (!years || parseInt(years) < 1) {
+                    toast("Please enter valid years of service", true);
+                    return null;
+                }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// LAYOUT CONFIG
-// ═══════════════════════════════════════════════════════════════════════════════
-function getLayout() {
-  const n = id => parseFloat(document.getElementById(id).value) || 0;
-  return {
-    name:  { x: n('lx-name-x'),  y: n('lx-name-y'),  size: n('lx-name-size'),  align: 'center' },
-    years: { x: n('lx-years-x'), y: n('lx-years-y'), size: n('lx-years-size'), align: 'center' },
-    date:  { x: n('lx-date-x'),  y: n('lx-date-y'),  size: n('lx-date-size'),  align: 'center' },
-    star:  { x: n('lx-star-x'),  y: n('lx-star-y'),  size: n('lx-star-size') },
-    seal:  { x: n('lx-seal-x'),  y: n('lx-seal-y'),  size: n('lx-seal-size') },
-    sig:   { x: n('lx-sig-x'),   y: n('lx-sig-y'),   size: n('lx-sig-size'),  align: 'center' },
-  };
-}
+                // Validate critical assets
+                if (!state.template) {
+                    toast("template.pdf failed to load", true);
+                    return null;
+                }
+                if (!state.stars[star]) {
+                    toast(`star_${star}.png failed to load`, true);
+                    return null;
+                }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// PDF GENERATION
-// ═══════════════════════════════════════════════════════════════════════════════
-async function generatePDF() {
-  const { PDFDocument, rgb, StandardFonts } = PDFLib;
+                // Load template
+                const pdfDoc = await PDFDocument.load(state.template);
+                pdfDoc.registerFontkit(fontkit);
+                const pages = pdfDoc.getPages();
+                if (!pages.length) throw new Error("Template PDF has no pages");
+                const page = pages[0];
 
-  const name  = document.getElementById('f-name').value.trim();
-  const date  = document.getElementById('f-date').value;
-  const years = document.getElementById('f-years').value;
-  const star  = document.querySelector('input[name="star"]:checked').value;
+                // Embed font — fall back gracefully to Helvetica if Diploma.ttf didn't load
+                const font = state.font
+                    ? await pdfDoc.embedFont(state.font)
+                    : await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  // Validate form
-  if (!name)                        { toast('Please enter a recipient name', true);      return null; }
-  if (!date)                        { toast('Please select a date', true);               return null; }
-  if (!years || parseInt(years) < 1){ toast('Please enter valid years of service', true);return null; }
+                // Embed Blank Script font for signature — fall back to Helvetica-Oblique if not loaded
+                const sigFont = state.blankScriptFont
+                    ? await pdfDoc.embedFont(state.blankScriptFont)
+                    : await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
-  // Validate critical assets
-  if (!state.template)      { toast('template.pdf failed to load', true); return null; }
-  if (!state.stars[star])   { toast(`star_${star}.png failed to load`, true); return null; }
+                // Draw centre-aligned text
+                function drawCentred(text, cfg, color) {
+                    const w = font.widthOfTextAtSize(text, cfg.size);
+                    const x = cfg.align === "center" ? cfg.x - w / 2 : cfg.x;
+                    page.drawText(text, {
+                        x,
+                        y: cfg.y,
+                        size: cfg.size,
+                        font,
+                        color,
+                    });
+                }
 
-  // Load template
-  const pdfDoc = await PDFDocument.load(state.template);
-  pdfDoc.registerFontkit(fontkit);
-  const pages  = pdfDoc.getPages();
-  if (!pages.length) throw new Error('Template PDF has no pages');
-  const page = pages[0];
+                const layout = getLayout();
+                drawCentred(name, layout.name, rgb(0.12, 0.08, 0.35));
+                drawCentred(
+                    yearsLabel(years),
+                    layout.years,
+                    rgb(0.25, 0.18, 0.45),
+                );
+                drawCentred(formatDate(date), layout.date, rgb(0.4, 0.4, 0.4));
 
-  // Embed font — fall back gracefully to Helvetica if Diploma.ttf didn't load
-  const font = state.font
-    ? await pdfDoc.embedFont(state.font)
-    : await pdfDoc.embedFont(StandardFonts.Helvetica);
+                // Draw signature in Blank Script font
+                const signee = document.getElementById("f-signee").value.trim();
+                if (signee) {
+                    const sigCfg = layout.sig;
+                    const sigW = sigFont.widthOfTextAtSize(signee, sigCfg.size);
+                    const sigX =
+                        sigCfg.align === "center"
+                            ? sigCfg.x - sigW / 2
+                            : sigCfg.x;
+                    page.drawText(signee, {
+                        x: sigX,
+                        y: sigCfg.y,
+                        size: sigCfg.size,
+                        font: sigFont,
+                        color: rgb(0.12, 0.08, 0.35),
+                    });
+                }
 
-  // Embed Blank Script font for signature — fall back to Helvetica-Oblique if not loaded
-  const sigFont = state.blankScriptFont
-    ? await pdfDoc.embedFont(state.blankScriptFont)
-    : await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+                // Embed seal (optional — skip silently if it didn't load)
+                if (state.seal) {
+                    const sealImg = state.seal.isPng
+                        ? await pdfDoc.embedPng(state.seal.buffer)
+                        : await pdfDoc.embedJpg(state.seal.buffer);
+                    const ss = layout.seal.size;
+                    page.drawImage(sealImg, {
+                        x: layout.seal.x,
+                        y: layout.seal.y,
+                        width: ss,
+                        height: ss,
+                    });
+                }
 
-  // Draw centre-aligned text
-  function drawCentred(text, cfg, color) {
-    const w = font.widthOfTextAtSize(text, cfg.size);
-    const x = cfg.align === 'center' ? cfg.x - w / 2 : cfg.x;
-    page.drawText(text, { x, y: cfg.y, size: cfg.size, font, color });
-  }
+                // Embed star
+                const starAsset = state.stars[star];
+                const starImg = starAsset.isPng
+                    ? await pdfDoc.embedPng(starAsset.buffer)
+                    : await pdfDoc.embedJpg(starAsset.buffer);
+                const sz = layout.star.size;
+                page.drawImage(starImg, {
+                    x: layout.star.x,
+                    y: layout.star.y,
+                    width: sz,
+                    height: sz,
+                });
 
-  const layout = getLayout();
-  drawCentred(name,              layout.name,  rgb(0.12, 0.08, 0.35));
-  drawCentred(yearsLabel(years), layout.years, rgb(0.25, 0.18, 0.45));
-  drawCentred(formatDate(date),  layout.date,  rgb(0.40, 0.40, 0.40));
+                return pdfDoc.save();
+            }
 
-  // Draw signature in Blank Script font
-  const signee = document.getElementById('f-signee').value.trim();
-  if (signee) {
-    const sigCfg = layout.sig;
-    const sigW = sigFont.widthOfTextAtSize(signee, sigCfg.size);
-    const sigX = sigCfg.align === 'center' ? sigCfg.x - sigW / 2 : sigCfg.x;
-    page.drawText(signee, { x: sigX, y: sigCfg.y, size: sigCfg.size, font: sigFont, color: rgb(0.12, 0.08, 0.35) });
-  }
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // BUTTON HANDLERS
+            // ═══════════════════════════════════════════════════════════════════════════════
+            const btn = document.getElementById("btn-generate");
 
-  // Embed seal (optional — skip silently if it didn't load)
-  if (state.seal) {
-    const sealImg = state.seal.isPng
-      ? await pdfDoc.embedPng(state.seal.buffer)
-      : await pdfDoc.embedJpg(state.seal.buffer);
-    const ss = layout.seal.size;
-    page.drawImage(sealImg, { x: layout.seal.x, y: layout.seal.y, width: ss, height: ss });
-  }
+            async function runGenerate() {
+                btn.disabled = true;
+                btn.classList.add("generating");
+                btn.querySelector(".btn-text").textContent = "Generating…";
 
-  // Embed star
-  const starAsset = state.stars[star];
-  const starImg = starAsset.isPng
-    ? await pdfDoc.embedPng(starAsset.buffer)
-    : await pdfDoc.embedJpg(starAsset.buffer);
-  const sz = layout.star.size;
-  page.drawImage(starImg, { x: layout.star.x, y: layout.star.y, width: sz, height: sz });
+                try {
+                    const bytes = await generatePDF();
+                    if (!bytes) return;
 
-  return pdfDoc.save();
-}
+                    state.lastPdfBytes = bytes;
+                    state.lastFilename =
+                        slugName(
+                            document.getElementById("f-name").value.trim(),
+                        ) + ".pdf";
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// BUTTON HANDLERS
-// ═══════════════════════════════════════════════════════════════════════════════
-const btn = document.getElementById('btn-generate');
+                    const blob = new Blob([bytes], { type: "application/pdf" });
+                    const iframe = document.getElementById("preview");
+                    iframe.src = URL.createObjectURL(blob);
+                    iframe.style.display = "block";
+                    document.getElementById("preview-empty").style.display =
+                        "none";
+                    document.getElementById("preview-actions").style.display =
+                        "flex";
 
-async function runGenerate() {
-  btn.disabled = true;
-  btn.classList.add('generating');
-  btn.querySelector('.btn-text').textContent = 'Generating…';
+                    toast("Certificate generated ✓");
+                } catch (err) {
+                    console.error(err);
+                    toast("Error: " + err.message, true);
+                } finally {
+                    btn.disabled = false;
+                    btn.classList.remove("generating");
+                    btn.querySelector(".btn-text").textContent =
+                        "Generate Certificate";
+                }
+            }
 
-  try {
-    const bytes = await generatePDF();
-    if (!bytes) return;
+            btn.addEventListener("click", runGenerate);
+            document
+                .getElementById("btn-regenerate")
+                .addEventListener("click", runGenerate);
+            document
+                .getElementById("btn-download")
+                .addEventListener("click", () => {
+                    if (!state.lastPdfBytes) return;
+                    const a = Object.assign(document.createElement("a"), {
+                        href: URL.createObjectURL(
+                            new Blob([state.lastPdfBytes], {
+                                type: "application/pdf",
+                            }),
+                        ),
+                        download: state.lastFilename || "certificate.pdf",
+                    });
+                    a.click();
+                });
 
-    state.lastPdfBytes = bytes;
-    state.lastFilename = slugName(document.getElementById('f-name').value.trim()) + '.pdf';
-
-    const blob = new Blob([bytes], { type: 'application/pdf' });
-    const iframe = document.getElementById('preview');
-    iframe.src = URL.createObjectURL(blob);
-    iframe.style.display = 'block';
-    document.getElementById('preview-empty').style.display   = 'none';
-    document.getElementById('preview-actions').style.display = 'flex';
-
-    toast('Certificate generated ✓');
-  } catch (err) {
-    console.error(err);
-    toast('Error: ' + err.message, true);
-  } finally {
-    btn.disabled = false;
-    btn.classList.remove('generating');
-    btn.querySelector('.btn-text').textContent = 'Generate Certificate';
-  }
-}
-
-btn.addEventListener('click', runGenerate);
-document.getElementById('btn-regenerate').addEventListener('click', runGenerate);
-document.getElementById('btn-download').addEventListener('click', () => {
-  if (!state.lastPdfBytes) return;
-  const a = Object.assign(document.createElement('a'), {
-    href: URL.createObjectURL(new Blob([state.lastPdfBytes], { type: 'application/pdf' })),
-    download: state.lastFilename || 'certificate.pdf',
-  });
-  a.click();
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════════════════════
-document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
-fetchAssets();
-</script>
-</body>
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // INIT
+            // ═══════════════════════════════════════════════════════════════════════════════
+            document.getElementById("f-date").value = new Date()
+                .toISOString()
+                .slice(0, 10);
+            fetchAssets();
+        </script>
+    </body>
 </html>
