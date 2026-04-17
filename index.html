@@ -413,6 +413,7 @@
     <div class="asset-item loading" id="as-star-bronze"><div class="dot"></div><span>star_bronze.png</span></div>
     <div class="asset-item loading" id="as-star-silver"><div class="dot"></div><span>star_silver.png</span></div>
     <div class="asset-item loading" id="as-star-gold">  <div class="dot"></div><span>star_gold.png</span></div>
+    <div class="asset-item loading" id="as-blank-script"><div class="dot"></div><span>Blank Script.otf</span></div>
   </div>
 
   <!-- ── Sidebar ── -->
@@ -433,6 +434,11 @@
     <div class="field">
       <label for="f-years">Years of Service</label>
       <input type="number" id="f-years" min="1" max="99" placeholder="e.g. 10" />
+    </div>
+
+    <div class="field">
+      <label for="f-signee">Signed by (Rector Magnificus)</label>
+      <input type="text" id="f-signee" placeholder="e.g. Jane Smith" />
     </div>
 
     <label style="margin-bottom:10px">Award Tier</label>
@@ -496,6 +502,11 @@
         <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-seal-y" value="60" /></div>
         <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-seal-size" value="80" /></div>
 
+        <div class="layout-heading">Signature</div>
+        <div class="layout-group"><div class="lbl">X</div><input type="number" id="lx-sig-x" value="680" /></div>
+        <div class="layout-group"><div class="lbl">Y</div><input type="number" id="lx-sig-y" value="95" /></div>
+        <div class="layout-group"><div class="lbl">Size</div><input type="number" id="lx-sig-size" value="36" /></div>
+
       </div>
     </details>
 
@@ -554,6 +565,7 @@ const ASSETS = {
   starBronze: 'assets/star_bronze.png',
   starSilver: 'assets/star_silver.png',
   starGold:   'assets/star_gold.png',
+  blankScript: 'assets/Blank%20Script.otf',
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -570,6 +582,7 @@ const state = {
   },
   lastPdfBytes: null,
   lastFilename: null,
+  blankScriptFont: null,
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -645,6 +658,7 @@ async function fetchAssets() {
     load('star-bronze', ASSETS.starBronze, buf => { state.stars.bronze  = { buffer: buf, isPng: isPng(ASSETS.starBronze) }; }),
     load('star-silver', ASSETS.starSilver, buf => { state.stars.silver  = { buffer: buf, isPng: isPng(ASSETS.starSilver) }; }),
     load('star-gold',   ASSETS.starGold,   buf => { state.stars.gold    = { buffer: buf, isPng: isPng(ASSETS.starGold)   }; }),
+    load('blank-script', ASSETS.blankScript, buf => { state.blankScriptFont = buf; }),
   ]);
 
   if (state.template && state.font) {
@@ -666,6 +680,7 @@ function getLayout() {
     date:  { x: n('lx-date-x'),  y: n('lx-date-y'),  size: n('lx-date-size'),  align: 'center' },
     star:  { x: n('lx-star-x'),  y: n('lx-star-y'),  size: n('lx-star-size') },
     seal:  { x: n('lx-seal-x'),  y: n('lx-seal-y'),  size: n('lx-seal-size') },
+    sig:   { x: n('lx-sig-x'),   y: n('lx-sig-y'),   size: n('lx-sig-size'),  align: 'center' },
   };
 }
 
@@ -701,6 +716,11 @@ async function generatePDF() {
     ? await pdfDoc.embedFont(state.font)
     : await pdfDoc.embedFont(StandardFonts.Helvetica);
 
+  // Embed Blank Script font for signature — fall back to Helvetica-Oblique if not loaded
+  const sigFont = state.blankScriptFont
+    ? await pdfDoc.embedFont(state.blankScriptFont)
+    : await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+
   // Draw centre-aligned text
   function drawCentred(text, cfg, color) {
     const w = font.widthOfTextAtSize(text, cfg.size);
@@ -712,6 +732,15 @@ async function generatePDF() {
   drawCentred(name,              layout.name,  rgb(0.12, 0.08, 0.35));
   drawCentred(yearsLabel(years), layout.years, rgb(0.25, 0.18, 0.45));
   drawCentred(formatDate(date),  layout.date,  rgb(0.40, 0.40, 0.40));
+
+  // Draw signature in Blank Script font
+  const signee = document.getElementById('f-signee').value.trim();
+  if (signee) {
+    const sigCfg = layout.sig;
+    const sigW = sigFont.widthOfTextAtSize(signee, sigCfg.size);
+    const sigX = sigCfg.align === 'center' ? sigCfg.x - sigW / 2 : sigCfg.x;
+    page.drawText(signee, { x: sigX, y: sigCfg.y, size: sigCfg.size, font: sigFont, color: rgb(0.12, 0.08, 0.35) });
+  }
 
   // Embed seal (optional — skip silently if it didn't load)
   if (state.seal) {
