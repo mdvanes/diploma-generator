@@ -9,7 +9,8 @@ export async function generatePDF() {
   const name = document.getElementById("f-name").value.trim();
   const date = document.getElementById("f-date").value;
   const years = document.getElementById("f-years").value;
-  const star = document.querySelector('input[name="star"]:checked').value;
+  const yearsNum = parseInt(years, 10);
+  const star = yearsNum >= 15 ? "gold" : yearsNum >= 10 ? "silver" : "bronze";
   const certType = document.querySelector(
     'input[name="cert-type"]:checked',
   ).value;

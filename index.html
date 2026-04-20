@@ -138,79 +138,11 @@
 
                     <div class="field">
                         <label for="f-years">Years of Service</label>
-                        <input
-                            type="number"
-                            id="f-years"
-                            min="1"
-                            max="99"
-                            placeholder="e.g. 10"
-                            value="5"
-                        />
-                    </div>
-
-                    <label class="tier-label">Award Tier</label>
-                    <div class="star-group">
-                        <div class="star-opt">
-                            <input
-                                type="radio"
-                                name="star"
-                                id="star-bronze"
-                                value="bronze"
-                                checked
-                            />
-                            <label for="star-bronze">
-                                <svg width="28" height="28" viewBox="0 0 24 24">
-                                    <polygon
-                                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                                        fill="#cd7f32"
-                                        stroke="#a0522d"
-                                        stroke-width="1.2"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-                                Bronze
-                            </label>
-                        </div>
-                        <div class="star-opt">
-                            <input
-                                type="radio"
-                                name="star"
-                                id="star-silver"
-                                value="silver"
-                            />
-                            <label for="star-silver">
-                                <svg width="28" height="28" viewBox="0 0 24 24">
-                                    <polygon
-                                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                                        fill="#c0c0c0"
-                                        stroke="#708090"
-                                        stroke-width="1.2"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-                                Silver
-                            </label>
-                        </div>
-                        <div class="star-opt">
-                            <input
-                                type="radio"
-                                name="star"
-                                id="star-gold"
-                                value="gold"
-                            />
-                            <label for="star-gold">
-                                <svg width="28" height="28" viewBox="0 0 24 24">
-                                    <polygon
-                                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                                        fill="#ffd700"
-                                        stroke="#b8860b"
-                                        stroke-width="1.2"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-                                Gold
-                            </label>
-                        </div>
+                        <select id="f-years">
+                            <option value="5" selected>5 years</option>
+                            <option value="10">10 years</option>
+                            <option value="15">15 years</option>
+                        </select>
                     </div>
                 </div>
 
