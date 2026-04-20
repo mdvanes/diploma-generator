@@ -566,6 +566,10 @@
                     <div class="dot"></div>
                     <span>template.pdf</span>
                 </div>
+                <div class="asset-item loading" id="as-template-honorary">
+                    <div class="dot"></div>
+                    <span>template_honorary.pdf</span>
+                </div>
                 <div class="asset-item loading" id="as-font">
                     <div class="dot"></div>
                     <span>Diploma.ttf</span>
@@ -995,6 +999,7 @@
             // ═══════════════════════════════════════════════════════════════════════════════
             const ASSETS = {
                 template: "assets/template.pdf",
+                templateHonorary: "assets/template_honorary.pdf",
                 font: "assets/Diploma.ttf",
                 seal: "assets/seal.png",
                 starBronze: "assets/star_bronze.png",
@@ -1007,7 +1012,8 @@
             // STATE
             // ═══════════════════════════════════════════════════════════════════════════════
             const state = {
-                template: null, // ArrayBuffer
+                template: null,          // ArrayBuffer
+                templateHonorary: null,  // ArrayBuffer
                 font: null, // ArrayBuffer
                 seal: null, // { buffer, isPng }
                 stars: {
@@ -1103,6 +1109,9 @@
                     load("template", ASSETS.template, (buf) => {
                         state.template = buf;
                     }),
+                    load("template-honorary", ASSETS.templateHonorary, (buf) => {
+                        state.templateHonorary = buf;
+                    }),
                     load("font", ASSETS.font, (buf) => {
                         state.font = buf;
                     }),
@@ -1197,8 +1206,6 @@
             // ═══════════════════════════════════════════════════════════════════════════════
             async function generatePDF() {
                 const { PDFDocument, rgb, StandardFonts } = PDFLib;
-                const nameColor = rgb(0.059, 0.408, 0.651); // #0f68a6 — shared by name, years, and border
-
                 const name = document.getElementById("f-name").value.trim();
                 const date = document.getElementById("f-date").value;
                 const years = document.getElementById("f-years").value;
@@ -1207,6 +1214,7 @@
                 ).value;
                 const certType = document.querySelector('input[name="cert-type"]:checked').value;
                 const isHonorary = certType === 'honorary';
+                const nameColor = isHonorary ? rgb(0.753, 0.004, 0) : rgb(0.059, 0.408, 0.651); // #c00100 honorary / #0f68a6 anniversary
 
                 // Validate form
                 if (!name) {
@@ -1223,8 +1231,8 @@
                 }
 
                 // Validate critical assets
-                if (!state.template) {
-                    toast("template.pdf failed to load", true);
+                if (!state.template || !state.templateHonorary) {
+                    toast("template PDF failed to load", true);
                     return null;
                 }
                 if (!isHonorary && !state.stars[star]) {
@@ -1233,7 +1241,8 @@
                 }
 
                 // Load template
-                const pdfDoc = await PDFDocument.load(state.template);
+                const templateBuffer = isHonorary ? state.templateHonorary : state.template;
+                const pdfDoc = await PDFDocument.load(templateBuffer);
                 pdfDoc.registerFontkit(fontkit);
                 const pages = pdfDoc.getPages();
                 if (!pages.length) throw new Error("Template PDF has no pages");
